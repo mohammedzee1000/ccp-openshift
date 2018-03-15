@@ -11,6 +11,9 @@ oc_apply = "| oc apply -f -"
 for entry in yml_dict["Projects"]:
     pipeline_name = entry["app-id"] + "-" + entry["job-id"] + "-" + \
         entry["desired-tag"]
+    oc_set_or_create_proj = "oc project {} || oc new-project {}".format(
+        entry["app-id"], entry["app-id"]
+    )
     command = "oc process -f seed-job/template.yaml " + \
         "-p GIT_URL={} ".format(entry["git-url"]) + \
         "-p GIT_PATH={} ".format(entry["git-path"]) + \
@@ -29,4 +32,6 @@ for entry in yml_dict["Projects"]:
     oc_build = "oc start-build {} -n myproject".format(pipeline_name)
 
     with open("projects.sh", "a+") as f:
-        f.write("{} {} && {} \n".format(command, oc_apply, oc_build))
+        f.write("{} && {} {} && {} \n".format(
+            oc_set_or_create_proj, command, oc_apply, oc_build
+        ))
