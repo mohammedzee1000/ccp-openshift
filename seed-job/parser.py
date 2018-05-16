@@ -32,7 +32,7 @@ for entry in yml_dict["Projects"]:
     #     f.write("{} {} && {} \n".format(command, oc_apply, oc_build))
     with open("projects.sh", "a+") as f:
         f.write(
-            "oc new-project {} || oc project {}".format(
-                entry["app-id"], entry["app_id"]
+            "oc new-project {} || oc project {}\n".format(
+                entry["app-id"], entry["app-id"]
             )
         )
