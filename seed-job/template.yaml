@@ -102,15 +102,15 @@ objects:
                                 stage('RPM Updates') {
                                   sh (returnStdout: true, script: "docker run --rm --volumes-from `docker ps -qf name=${daemonset_name}` --entrypoint /bin/python ${image_name} /opt/scanning/yumupdates.py > yum-check-update 2>&1", returnStatus: true)
                                   sh "cat yum-check-update"
-                                },
+                                }
                                 stage('Verify RPMs') {
                                   sh (returnStdout: true, script: "docker run --rm --volumes-from `docker ps -qf name=${daemonset_name}` --entrypoint /bin/python ${image_name} /opt/scanning/rpmverify.py > rpm-verify 2>&1", returnStatus: true)
                                   sh "cat rpm-verify"
-                                },
+                                }
                                 stage('Miscellaneous updates') {
                                   sh (returnStdout: true, script: "docker run --rm --volumes-from `docker ps -qf name=${daemonset_name}` --entrypoint /bin/python ${image_name} /opt/scanning/misc_package_updates.py all > misc-updates 2>&1", returnStatus: true)
                                   sh "cat misc-updates"
-                                },
+                                }
                                 stage('Container capabilities') {
                                   def run_label = sh (script: "docker inspect ${image_name} --format '{{ index .Config.Labels \"RUN\" }}'")
                                   sh (returnStdout: true, script: "docker run --rm --volumes-from `docker ps -qf name=${daemonset_name}` --entrypoint /bin/python ${image_name} /opt/scanning/container-capabilities.py ' ${run_label} ' > capabilities 2>&1", returnStatus: true)
